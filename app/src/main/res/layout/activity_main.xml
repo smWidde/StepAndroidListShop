@@ -11,55 +11,119 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="10">
+        android:weightSum="20">
 
         <ListView
             android:id="@+id/NumbersListView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="2">
+            android:layout_weight="5">
 
         </ListView>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="8"
+            android:layout_weight="15"
             android:orientation="horizontal"
-            android:weightSum="4">
+            android:weightSum="5">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TableLayout
+                android:layout_width="fill_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:weightSum="2">
+                android:layout_weight="1">
 
-                <EditText
-                    android:id="@+id/NameText"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="textPersonName"
-                    android:text="Name" />
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:weightSum="10">
 
-                <EditText
-                    android:id="@+id/PriceText"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="number"
-                    android:text="Price" />
+                    <TextView
+                        android:id="@+id/textViewName"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/list_name"
+                        android:textAlignment="center" />
 
-            </LinearLayout>
+                    <EditText
+                        android:id="@+id/NameText"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="9"
+                        android:ems="10"
+                        android:inputType="textPersonName" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:weightSum="10">
+
+                    <TextView
+                        android:id="@+id/textViewPrice"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/list_price"
+                        android:textAlignment="center" />
+
+                    <EditText
+                        android:id="@+id/PriceText"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="9"
+                        android:ems="10"
+                        android:inputType="number" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:weightSum="10">
+
+                    <TextView
+                        android:id="@+id/textViewDate"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/list_date"
+                        android:textAlignment="center" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="9"
+                        android:orientation="horizontal"
+                        android:weightSum="5">
+
+                        <TextView
+                            android:id="@+id/textViewDateValue"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1" />
+
+                        <Button
+                            android:id="@+id/button2"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="4"
+                            android:onClick="setTime"
+                            android:text="..." />
+                    </LinearLayout>
+                </TableRow>
+
+            </TableLayout>
 
             <Button
                 android:id="@+id/button"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_weight="3"
+                android:layout_weight="4"
                 android:onClick="AddClick"
                 android:text="Add" />
         </LinearLayout>
