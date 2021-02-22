@@ -37,9 +37,12 @@ public class MainActivity extends AppCompatActivity {
         fruitsList.setAdapter(adapter);
 
         fruitsList.setOnItemClickListener((parent, view, position, id) -> {
-            Toast.makeText(getApplicationContext(), "You bought "+products.get(position), Toast.LENGTH_SHORT).show();
-            products.remove(position);
-            adapter.notifyDataSetChanged();
+            DeleteDialogFragment ddf = new DeleteDialogFragment(()->{
+                Toast.makeText(getApplicationContext(), products.get(position) + " куплено", Toast.LENGTH_SHORT).show();
+                products.remove(position);
+                adapter.notifyDataSetChanged();
+            });
+            ddf.show(getFragmentManager(), "custom");
         });
     }
     public void AddClick(View view)
