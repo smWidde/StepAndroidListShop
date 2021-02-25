@@ -3,4 +3,7 @@
     <string name="list_name">Имя</string>
     <string name="list_price">Цена</string>
     <string name="list_date">Дата</string>
+    <string name="text_costs">Расходы</string>
+    <string name="text_incomes">Доходы</string>
+    <string name="text_overall">Итого:</string>
 </resources>

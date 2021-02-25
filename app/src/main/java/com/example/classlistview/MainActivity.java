@@ -10,6 +10,7 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -21,51 +22,165 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
-
-    ArrayList<Product> products = new ArrayList<>();
-    Calendar cal = Calendar.getInstance();
-    MyArrayAdapter adapter;
+    private Calendar cal = Calendar.getInstance();
+    private Button buttonDate;
+    private ArrayList<Product> costs;
+    private ArrayList<Product> incomes;
+    private ListView costs_lv;
+    private ListView incomes_lv;
+    private MyArrayAdapter costs_adapter;
+    private MyArrayAdapter incomes_adapter;
+//    ArrayList<Product> products = new ArrayList<>();
+//    MyArrayAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        products.add(new Product("Шляпа", 100, cal));
-        products.add(new Product("Обувь", 100, cal));
-        products.add(new Product("Глаз собаки", Integer.MAX_VALUE, cal));
-        final ListView fruitsList = findViewById(R.id.NumbersListView);
-        adapter = new MyArrayAdapter(this, products);
-        fruitsList.setAdapter(adapter);
-
-        fruitsList.setOnItemClickListener((parent, view, position, id) -> {
+        buttonDate = findViewById(R.id.buttonDate);
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            Calendar tmp_cal = (Calendar)bundle.get("date");
+            if(tmp_cal!=null)
+            {
+                cal = tmp_cal;
+            }
+        }
+        SetTime();
+        costs = ProductsSaveManager.GetCosts(this, cal);
+        incomes = ProductsSaveManager.GetIncomes(this, cal);
+        costs_lv = findViewById(R.id.listCosts);
+        incomes_lv = findViewById(R.id.listIncomes);
+        costs_adapter = new MyArrayAdapter(this, costs);
+        incomes_adapter = new MyArrayAdapter(this, incomes);
+        costs_lv.setAdapter(costs_adapter);
+        incomes_lv.setAdapter(incomes_adapter);
+        CountPrice();
+        costs_lv.setOnItemClickListener((parent, view, position, id) -> {
             DeleteDialogFragment ddf = new DeleteDialogFragment(()->{
-                Toast.makeText(getApplicationContext(), products.get(position) + " куплено", Toast.LENGTH_SHORT).show();
-                products.remove(position);
-                adapter.notifyDataSetChanged();
+                Toast.makeText(getApplicationContext(), costs.get(position).Name + " удалено", Toast.LENGTH_SHORT).show();
+                costs.remove(position);
+                ProductsSaveManager.SaveCosts(costs, this, cal);
+                costs_adapter.notifyDataSetChanged();
+                CountPrice();
             });
             ddf.show(getFragmentManager(), "custom");
         });
-    }
-    public void AddClick(View view)
-    {
-        try {
-            products.add(new Product(((EditText)findViewById(R.id.NameText)).getText().toString(), Integer.parseInt(((EditText)findViewById(R.id.PriceText)).getText().toString()), cal));
-            adapter.notifyDataSetChanged();
-        }
-        catch (NumberFormatException ex)
-        {
-            Toast.makeText(this, "Number format exception", Toast.LENGTH_SHORT).show();
-        }
+        incomes_lv.setOnItemClickListener((parent, view, position, id) -> {
+            DeleteDialogFragment ddf = new DeleteDialogFragment(()->{
+                Toast.makeText(getApplicationContext(), incomes.get(position).Name + " удалено", Toast.LENGTH_SHORT).show();
+                incomes.remove(position);
+                ProductsSaveManager.SaveIncomes(incomes, this, cal);
+                incomes_adapter.notifyDataSetChanged();
+                CountPrice();
+            });
+            ddf.show(getFragmentManager(), "custom");
+        });
+//        setContentView(R.layout.activity_main);
+//        products.add(new Product("Шляпа", 100, cal));
+//        products.add(new Product("Обувь", 100, cal));
+//        products.add(new Product("Глаз собаки", Integer.MAX_VALUE, cal));
+//        final ListView fruitsList = findViewById(R.id.NumbersListView);
+//        adapter = new MyArrayAdapter(this, products);
+//        fruitsList.setAdapter(adapter);
+//
+//        fruitsList.setOnItemClickListener((parent, view, position, id) -> {
+//            DeleteDialogFragment ddf = new DeleteDialogFragment(()->{
+//                Toast.makeText(getApplicationContext(), products.get(position) + " куплено", Toast.LENGTH_SHORT).show();
+//                products.remove(position);
+//                adapter.notifyDataSetChanged();
+//            });
+//            ddf.show(getFragmentManager(), "custom");
+//        });
+
 
     }
-    DatePickerDialog.OnDateSetListener t= (view, year, month, dayOfMonth) -> {
+    public void SetTime()
+    {
+        buttonDate.setText(DateUtils.formatDateTime(this, cal.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE));
+    }
+    DatePickerDialog.OnDateSetListener t = (view, year, month, dayOfMonth) -> {
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        ((TextView)findViewById(R.id.textViewDateValue)).setText(DateUtils.formatDateTime(this, cal.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE));
+        SetTime();
     };
-    public void setTime(View v) {
-        new DatePickerDialog(MainActivity.this, t, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
-
+    public void SetDate(View view)
+    {
+        DataSelectDialogFragment dsdf = new DataSelectDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("date", cal);
+        dsdf.setArguments(bundle);
+        dsdf.show(getSupportFragmentManager(), "myDatePicker");
     }
+    public void CallAdder(View view)
+    {
+        AdderDialogFragment adf = new AdderDialogFragment(this::SaveChanges);
+        Bundle bundle = new Bundle();
+        if(view.equals(findViewById(R.id.buttonCostsAdd)))
+        {
+            bundle.putSerializable("date", cal);
+            bundle.putSerializable("what_added", "costs");
+            adf.setArguments(bundle);
+            adf.show(getSupportFragmentManager(),"custom");
+        }
+        if(view.equals(findViewById(R.id.buttonIncomesAdd)))
+        {
+            bundle.putSerializable("date", cal);
+            bundle.putSerializable("what_added", "incomes");
+            adf.setArguments(bundle);
+            adf.show(getSupportFragmentManager(),"custom");
+        }
+    }
+    private void SaveChanges()
+    {
+        ChangeCollection(costs, ProductsSaveManager.GetCosts(this, cal));
+        costs_adapter.notifyDataSetChanged();
+        ChangeCollection(incomes, ProductsSaveManager.GetIncomes(this, cal));
+        incomes_adapter.notifyDataSetChanged();
+        CountPrice();
+    }
+    private void CountPrice()
+    {
+        Integer money = 0;
+        for(Product i : incomes)
+        {
+            money += i.Price;
+        }
+        for(Product i : costs)
+        {
+            money -= i.Price;
+        }
+        ((TextView)findViewById(R.id.textViewOverallValue)).setText(money.toString()+"₴");
+    }
+    private void ChangeCollection(ArrayList<Product> olds, ArrayList<Product> news)
+    {
+        olds.clear();
+        for(Product i : news)
+        {
+            olds.add(i);
+        }
+    }
+//    public void AddClick(View view)
+//    {
+//        try {
+//            products.add(new Product(((EditText)findViewById(R.id.NameText)).getText().toString(), Integer.parseInt(((EditText)findViewById(R.id.PriceText)).getText().toString()), cal));
+//            adapter.notifyDataSetChanged();
+//        }
+//        catch (NumberFormatException ex)
+//        {
+//            Toast.makeText(this, "Number format exception", Toast.LENGTH_SHORT).show();
+//        }
+//
+//    }
+//    DatePickerDialog.OnDateSetListener t= (view, year, month, dayOfMonth) -> {
+//        cal.set(Calendar.YEAR, year);
+//        cal.set(Calendar.MONTH, month);
+//        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+//        ((TextView)findViewById(R.id.textViewDateValue)).setText(DateUtils.formatDateTime(this, cal.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE));
+//    };
+//    public void setTime(View v) {
+//        new DatePickerDialog(MainActivity.this, t, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
+//
+//    }
 
 }

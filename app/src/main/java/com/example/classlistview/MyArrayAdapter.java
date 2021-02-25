@@ -29,7 +29,6 @@ public class MyArrayAdapter extends ArrayAdapter<Product> {
         View rowView = inflater.inflate(R.layout.list_view_layout, null, true);
         ((TextView)rowView.findViewById(R.id.nameValue)).setText(list.get(position).Name);
         ((TextView)rowView.findViewById(R.id.priceValue)).setText(list.get(position).Price.toString()+"₴");
-        ((TextView)rowView.findViewById(R.id.dateValue)).setText(DateUtils.formatDateTime(context, list.get(position).Date.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE));
         return rowView;
     }
 }
