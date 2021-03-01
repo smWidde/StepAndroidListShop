@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -30,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
     private ListView incomes_lv;
     private MyArrayAdapter costs_adapter;
     private MyArrayAdapter incomes_adapter;
-//    ArrayList<Product> products = new ArrayList<>();
-//    MyArrayAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,23 +75,6 @@ public class MainActivity extends AppCompatActivity {
             });
             ddf.show(getFragmentManager(), "custom");
         });
-//        setContentView(R.layout.activity_main);
-//        products.add(new Product("Шляпа", 100, cal));
-//        products.add(new Product("Обувь", 100, cal));
-//        products.add(new Product("Глаз собаки", Integer.MAX_VALUE, cal));
-//        final ListView fruitsList = findViewById(R.id.NumbersListView);
-//        adapter = new MyArrayAdapter(this, products);
-//        fruitsList.setAdapter(adapter);
-//
-//        fruitsList.setOnItemClickListener((parent, view, position, id) -> {
-//            DeleteDialogFragment ddf = new DeleteDialogFragment(()->{
-//                Toast.makeText(getApplicationContext(), products.get(position) + " куплено", Toast.LENGTH_SHORT).show();
-//                products.remove(position);
-//                adapter.notifyDataSetChanged();
-//            });
-//            ddf.show(getFragmentManager(), "custom");
-//        });
-
 
     }
     public void SetTime()
@@ -160,27 +143,5 @@ public class MainActivity extends AppCompatActivity {
             olds.add(i);
         }
     }
-//    public void AddClick(View view)
-//    {
-//        try {
-//            products.add(new Product(((EditText)findViewById(R.id.NameText)).getText().toString(), Integer.parseInt(((EditText)findViewById(R.id.PriceText)).getText().toString()), cal));
-//            adapter.notifyDataSetChanged();
-//        }
-//        catch (NumberFormatException ex)
-//        {
-//            Toast.makeText(this, "Number format exception", Toast.LENGTH_SHORT).show();
-//        }
-//
-//    }
-//    DatePickerDialog.OnDateSetListener t= (view, year, month, dayOfMonth) -> {
-//        cal.set(Calendar.YEAR, year);
-//        cal.set(Calendar.MONTH, month);
-//        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-//        ((TextView)findViewById(R.id.textViewDateValue)).setText(DateUtils.formatDateTime(this, cal.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE));
-//    };
-//    public void setTime(View v) {
-//        new DatePickerDialog(MainActivity.this, t, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
-//
-//    }
 
 }

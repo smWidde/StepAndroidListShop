@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -123,9 +125,17 @@ public class DataSelectDialogFragment extends DialogFragment {
             ((Button)myView.findViewById(R.id.buttonDatePicker)).setText(DateUtils.formatDateTime(cont, cal.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE));
         });
         ((Button)myView.findViewById(R.id.buttonSubmit)).setOnClickListener((view)->{
-            Intent intent = new Intent(cont, MainActivity.class);
-            intent.putExtra("date", cal);
-            this.startActivity(intent);
+
+            ImageView img = myView.findViewById(R.id.imageView);
+            img.setVisibility(View.VISIBLE);
+            img.setBackgroundResource(R.drawable.calendar_animation);
+            final AnimationDrawable myAnim = (AnimationDrawable)img.getBackground();
+            myAnim.start();
+            view.postDelayed(()-> {
+                    Intent intent = new Intent(cont, MainActivity.class);
+                    intent.putExtra("date", cal);
+                    cont.startActivity(intent);
+            }, 500);
         });
         return builder.setView(myView).setTitle("Выберите дату").create();
     }
